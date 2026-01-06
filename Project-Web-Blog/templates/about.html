@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Gztechiz{% endblock %}
+
+{% block meta_description %}Learn about Gztechiz - A professional blog platform dedicated to sharing knowledge about
+technology, programming, and web development.{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-info-circle"></i> About Gztechiz
+        </h1>
+        <p class="page-subtitle">
+            Our mission, vision, and the team behind the platform
+        </p>
+    </div>
+
+    <!-- Mission Section -->
+    <section class="about-section">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Our Mission</h2>
+                <p>
+                    At Gztechiz, our mission is to democratize technology education and
+                    make high-quality programming knowledge accessible to everyone. We believe
+                    that technology should be understandable, approachable, and empowering.
+                </p>
+                <p>
+                    We strive to create content that bridges the gap between complex technical
+                    concepts and practical implementation, helping developers at all levels
+                    to grow their skills and advance their careers.
+                </p>
+            </div>
+           
+        </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="about-section">
+        <div class="about-content reverse">
+            <div class="about-text">
+                <h2>Our Vision</h2>
+                <p>
+                    We envision a world where anyone with passion and dedication can learn
+                    programming and contribute to technological innovation. Our goal is to
+                    build the largest community of tech enthusiasts who learn, share, and
+                    grow together.
+                </p>
+                <p>
+                    Through comprehensive tutorials, in-depth articles, and community engagement,
+                    we aim to foster a culture of continuous learning and knowledge sharing
+                    in the tech industry.
+                </p>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <h2 class="section-title">Meet Our Team</h2>
+        <p class="section-subtitle">The passionate individuals behind Gztechiz</p>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-member-image">
+                    <img src="{{ url_for('static', filename='images/team-member1.jpg') }}" alt="Dds.Daniyal"
+                        loading="lazy">
+                </div>
+                <h3 class="team-member-name">Ds.Daniyal</h3>
+                <p class="team-member-role">Founder & Lead Developer</p>
+                <p class="team-member-bio">
+                    Just Few years he starts coding & and he is best coder now these days with
+                    Passionate about teaching and open-source contributions.
+                </p>
+                <div class="team-member-social">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-member-image">
+
+                </div>
+                <h2>Admin</h2>
+                <p>The Main Owner of This website is Gulzaib Choudhary.</p>
+                <h3 class="team-member-name">Gulzaib Choudhary</h3>
+                <p class="team-member-role">Content Strategist</p>
+                <img src="{{ url_for('static', filename='images/team-member2.jpg') }}" alt="Gulzaib Choudhary" loading="lazy">
+                <p class="team-member-bio">
+                    Technical writer with expertise in documentation and tutorials.
+                    Focuses on making complex topics easy to understand.
+                </p>
+                <div class="team-member-social">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-medium"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-member-image">
+                    <div class="team-member-initials">AS</div>
+                </div>
+                <H2>Our Coding helper</H2>
+                <p>Deep seek is our ai helper thanks to deepseek.</p>
+                <h3 class="team-member-name">Deep Seek</h3>
+                <p class="team-member-role">UI/UX Designer</p>
+                <img src="{{ url_for('static', filename='images/team-member3.jpg') }}" alt="Deep Seek" loading="lazy">
+                <p class="team-member-bio">
+                    Creates beautiful and functional user interfaces.
+                    Believes in the power of design to enhance user experience.
+                </p>
+                <div class="team-member-social">
+                    <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-behance"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_posts if stats else '100+' }}</div>
+                <div class="stat-label">Articles Published</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_views if stats else '50K+' }}</div>
+                <div class="stat-label">Total Views</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_comments if stats else '500+' }}</div>
+                <div class="stat-label">Community Comments</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ categories|length }}+</div>
+                <div class="stat-label">Categories</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <h2 class="section-title">Our Values</h2>
+
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3>Education First</h3>
+                <p>We prioritize learning and knowledge sharing above all else.</p>
+            </div>
+
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Community Driven</h3>
+                <p>Our platform grows through community contributions and feedback.</p>
+            </div>
+
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Quality Content</h3>
+                <p>Every article is thoroughly researched and well-documented.</p>
+            </div>
+
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>Accessibility</h3>
+                <p>Making technology education accessible to everyone, everywhere.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Join Our Community</h2>
+            <p class="cta-text">
+                Whether you're a beginner or an experienced developer,
+                there's always something new to learn at Gztechiz.
+            </p>
+            <div class="cta-actions">
+                <a href="{{ url_for('blog_list') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-book"></i> Start Reading
+                </a>
+                <a href="{{ url_for('contact') }}" class="btn btn-outline btn-lg">
+                    <i class="fas fa-envelope"></i> Get In Touch
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

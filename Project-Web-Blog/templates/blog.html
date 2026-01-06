@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Blog Articles - Gztechiz{% endblock %}
+
+{% block meta_description %}Browse our collection of articles, tutorials, and insights on technology, programming, and web development.{% endblock %}
+{% block meta_keywords %}blog articles, tutorials, programming guides, technology news{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-blog"></i> All Articles
+        </h1>
+        <p class="page-subtitle">
+            Explore our latest articles, tutorials, and insights
+        </p>
+    </div>
+
+    <!-- Categories Filter -->
+    <div class="categories-filter">
+        <div class="categories-list">
+            <a href="{{ url_for('blog_list') }}" 
+               class="category-filter-btn {% if not request.args.get('category') %}active{% endif %}">
+                All Posts
+            </a>
+            {% for category in categories %}
+            <a href="{{ url_for('category_view', slug=category.slug) }}" 
+               class="category-filter-btn {% if request.path == url_for('category_view', slug=category.slug) %}active{% endif %}">
+                {{ category.name }}
+                <span class="category-count">{{ category.blogs|length }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="blog-search">
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+            <div class="search-input-group">
+                <i class="fas fa-search search-icon"></i>
+                <input type="search" name="q" class="search-input" 
+                       placeholder="Search articles..." 
+                       value="{{ query if query else '' }}"
+                       maxlength="100">
+                <button type="submit" class="search-btn">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="blog-grid">
+        {% for post in posts %}
+        <article class="blog-card">
+            {% if post.image %}
+            <div class="blog-card-image">
+                <img src="{{ url_for('static', filename='uploads/' + post.image) }}" 
+                     alt="{{ post.title }}" 
+                     loading="lazy">
+                {% if post.category %}
+                <span class="blog-card-category">{{ post.category.name }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="blog-card-content">
+                <div class="blog-card-meta">
+                    <span class="blog-card-meta-item">
+                        <i class="fas fa-user"></i> {{ post.author }}
+                    </span>
+                    <span class="blog-card-meta-item">
+                        <i class="fas fa-clock"></i> {{ post.readtime }}
+                    </span>
+                    <span class="blog-card-meta-item">
+                        <i class="fas fa-calendar"></i> {{ post.created_at.strftime('%b %d, %Y') }}
+                    </span>
+                </div>
+                
+                <h3 class="blog-card-title">
+                    <a href="{{ url_for('post', slug=post.slug) }}">{{ post.title }}</a>
+                </h3>
+                
+                {% if post.subtitle %}
+                <p class="blog-card-subtitle">{{ post.subtitle }}</p>
+                {% endif %}
+                
+                <p class="blog-card-excerpt">
+                    {{ post.excerpt or post.content|striptags|truncate(150) }}
+                </p>
+                
+                <div class="blog-card-footer">
+                    <a href="{{ url_for('post', slug=post.slug) }}" class="btn btn-sm btn-primary">
+                        Read More <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <div class="blog-card-stats">
+                        <span class="blog-card-views" title="Views">
+                            <i class="fas fa-eye"></i> {{ post.views }}
+                        </span>
+                        <span class="blog-card-comments" title="Comments">
+                            <i class="fas fa-comment"></i> {{ post.comments|length }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination and pagination.pages > 1 %}
+    <div class="pagination">
+        {% if pagination.has_prev %}
+        <a href="{{ url_for('blog_list', page=pagination.prev_num) }}" class="pagination-link">
+            <i class="fas fa-chevron-left"></i> Previous
+        </a>
+        {% else %}
+        <span class="pagination-link disabled">
+            <i class="fas fa-chevron-left"></i> Previous
+        </span>
+        {% endif %}
+
+        <div class="pagination-numbers">
+            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == pagination.page %}
+                    <span class="pagination-number active">{{ page_num }}</span>
+                    {% else %}
+                    <a href="{{ url_for('blog_list', page=page_num) }}" class="pagination-number">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                <span class="pagination-ellipsis">...</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if pagination.has_next %}
+        <a href="{{ url_for('blog_list', page=pagination.next_num) }}" class="pagination-link">
+            Next <i class="fas fa-chevron-right"></i>
+        </a>
+        {% else %}
+        <span class="pagination-link disabled">
+            Next <i class="fas fa-chevron-right"></i>
+        </span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- No Results -->
+    {% if not posts %}
+    <div class="no-results">
+        <div class="no-results-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3>No articles found</h3>
+        <p>Try adjusting your search or browse all categories.</p>
+        <a href="{{ url_for('blog_list') }}" class="btn btn-primary">
+            Browse All Posts
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

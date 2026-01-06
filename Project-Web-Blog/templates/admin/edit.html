@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Blog - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header">
+        <h1>
+            <i class="fas fa-edit"></i> Edit Blog Post
+        </h1>
+        <a href="/admin/panel" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    
+    <div class="form-container">
+        <form method="POST" enctype="multipart/form-data">
+            <!-- Title -->
+            <div class="form-group">
+                <label for="title" class="form-label">Title *</label>
+                <input type="text" id="title" name="title" class="form-control" 
+                       value="{{ post.title }}" required>
+            </div>
+            
+            <!-- Subtitle -->
+            <div class="form-group">
+                <label for="subtitle" class="form-label">Subtitle</label>
+                <input type="text" id="subtitle" name="subtitle" class="form-control" 
+                       value="{{ post.subtitle or '' }}">
+            </div>
+            
+            <!-- Author -->
+            <div class="form-group">
+                <label for="author" class="form-label">Author</label>
+                <input type="text" id="author" name="author" class="form-control" 
+                       value="{{ post.author }}">
+            </div>
+            
+            <!-- Read Time -->
+            <div class="form-group">
+                <label for="readtime" class="form-label">Read Time</label>
+                <input type="text" id="readtime" name="readtime" class="form-control" 
+                       value="{{ post.readtime }}">
+            </div>
+            
+            <!-- Slug -->
+            <div class="form-group">
+                <label for="slug" class="form-label">URL Slug</label>
+                <input type="text" id="slug" name="slug" class="form-control" 
+                       value="{{ post.slug }}">
+            </div>
+            
+            <!-- Category -->
+            <div class="form-group">
+                <label for="category" class="form-label">Category</label>
+                <input type="text" id="category" name="category" class="form-control" 
+                       value="{{ post.category.name if post.category else '' }}">
+            </div>
+            
+            <!-- Current Image -->
+            {% if post.image %}
+            <div class="form-group">
+                <label class="form-label">Current Image</label>
+                <div>
+                    <img src="{{ url_for('static', filename='uploads/' + post.image) }}" 
+                         alt="Current image" style="max-width: 200px; border-radius: 5px;">
+                    <p style="margin-top: 5px; color: #666;">{{ post.image }}</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- New Image -->
+            <div class="form-group">
+                <label for="image" class="form-label">Change Image (optional)</label>
+                <input type="file" id="image" name="image" class="form-control" 
+                       accept="image/*">
+                <small style="color: #666;">Leave empty to keep current image</small>
+            </div>
+            
+            <!-- Content -->
+            <div class="form-group">
+                <label for="content" class="form-label">Content *</label>
+                <textarea id="content" name="content" class="form-control" 
+                          rows="15" required>{{ post.content }}</textarea>
+            </div>
+            
+            <!-- Submit Buttons -->
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Post
+                </button>
+                <a href="/admin/panel" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

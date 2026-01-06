@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="{% block meta_description %}Professional blog platform with modern design and powerful features{% endblock %}">
+    <meta name="keywords" content="blog, technology, programming, web development, tutorials">
+    <meta name="author" content="Gztechiz">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{% block og_title %}Gztechiz - Professional Blog Platform{% endblock %}">
+    <meta property="og:description"
+        content="{% block og_description %}Modern blog platform with cutting-edge features{% endblock %}">
+    <meta property="og:image"
+        content="{% block og_image %}{{ url_for('static', filename='images/og-image.jpg') }}{% endblock %}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="{% block twitter_title %}Gztechiz - Professional Blog Platform{% endblock %}">
+    <meta name="twitter:description"
+        content="{% block twitter_description %}Modern blog platform with cutting-edge features{% endblock %}">
+    <meta name="twitter:image"
+        content="{% block twitter_image %}{{ url_for('static', filename='images/twitter-image.jpg') }}{% endblock %}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+    <!-- Page-specific styles -->
+    {% block styles %}{% endblock %}
+
+    <title>{% block title %}Gztechiz - Professional Blog Platform{% endblock %}</title>
+
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Gztechiz",
+        "url": "{{ request.url_root }}",
+        "description": "Professional blog platform with modern design and powerful features",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Gztechiz",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ url_for('static', filename='images/logo.png', _external=True) }}"
+            }
+        }
+    }
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KMHFVPPL');</script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KMHFVPPL"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    
+    <!-- Before closing </body> tag -->
+    <script src="{{ url_for('static', filename='js/disable-validation.js') }}"></script>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <!-- Logo -->
+                <a href="{{ url_for('home') }}" class="navbar-brand">
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Gztechiz Logo"
+                        class="navbar-brand-logo" width="32" height="32">
+                    <span>Gztechiz</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="navbar-menu">
+                    <ul class="navbar-links">
+                        <li><a href="{{ url_for('home') }}"
+                                class="navbar-link {% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+                        <li><a href="{{ url_for('blog_list') }}"
+                                class="navbar-link {% if request.endpoint == 'blog_list' %}active{% endif %}">Blog</a>
+                        </li>
+
+                        <!-- Categories Dropdown -->
+                        <li class="navbar-dropdown">
+                            <button class="navbar-link navbar-dropdown-toggle">
+                                Categories <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="navbar-dropdown-menu">
+                                {% for category in categories %}
+                                <a href="{{ url_for('category_view', slug=category.slug) }}"
+                                    class="navbar-dropdown-item">
+                                    {{ category.name }}
+                                    <span class="category-count">{{ category.blogs|length }}</span>
+                                </a>
+                                {% endfor %}
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ url_for('blog_list') }}" class="navbar-dropdown-item">View All</a>
+                            </div>
+                        </li>
+
+                        <li><a href="{{ url_for('about') }}"
+                                class="navbar-link {% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
+                        <li><a href="{{ url_for('contact') }}"
+                                class="navbar-link {% if request.endpoint == 'contact' %}active{% endif %}">Contact</a>
+                        </li>
+                    </ul>
+
+                    <!-- Search -->
+                    <!-- Search Form -->
+                    <div class="navbar-search">
+                        <i class="fas fa-search navbar-search-icon"></i>
+                        <form action="{{ url_for('search') }}" method="GET" class="navbar-search-form">
+                            <input type="search" name="q" class="navbar-search-input" placeholder="Search articles..."
+                                aria-label="Search articles" autocomplete="off">
+                            <button type="submit" style="display:none">Search</button>
+                        </form>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+
+                    <!-- Admin/Login -->
+                    <div class="navbar-actions">
+                        {% if session.get('admin') %}
+                        <a href="{{ url_for('admin_panel') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('admin_logout') }}" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('admin_login') }}" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-in-alt"></i> Admin
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <!-- Mobile Menu Overlay -->
+                <div class="mobile-menu-overlay"></div>
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay"></div>
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <button class="mobile-menu-close" aria-label="Close mobile menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="{{ url_for('home') }}" class="mobile-menu-link">Home</a>
+            <a href="{{ url_for('blog_list') }}" class="mobile-menu-link">Blog</a>
+            <div class="mobile-menu-dropdown">
+                <button class="mobile-menu-dropdown-toggle">Categories <i class="fas fa-chevron-down"></i></button>
+                <div class="mobile-menu-dropdown-content">
+                    {% for category in categories %}
+                    <a href="{{ url_for('category_view', slug=category.slug) }}" class="mobile-menu-dropdown-item">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <a href="{{ url_for('about') }}" class="mobile-menu-link">About</a>
+            <a href="{{ url_for('contact') }}" class="mobile-menu-link">Contact</a>
+            <div class="mobile-menu-divider"></div>
+            {% if session.get('admin') %}
+            <a href="{{ url_for('admin_panel') }}" class="mobile-menu-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin_logout') }}" class="mobile-menu-link">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+            {% else %}
+            <a href="{{ url_for('admin_login') }}" class="mobile-menu-link">
+                <i class="fas fa-sign-in-alt"></i> Admin Login
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+                <div class="flash-content">
+                    <i
+                        class="flash-icon fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' or category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                    <span class="flash-message">{{ message }}</span>
+                </div>
+                <button class="flash-close" aria-label="Close message">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info -->
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Gztechiz Logo" width="40"
+                            height="40">
+                        <span class="footer-logo-text">Gztechiz</span>
+                    </div>
+                    <p class="footer-description">
+                        A professional blog platform dedicated to sharing knowledge about technology,
+                        programming, and web development.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://twitter.com" class="social-link" aria-label="Twitter" target="_blank"
+                            rel="noopener">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://github.com" class="social-link" aria-label="GitHub" target="_blank"
+                            rel="noopener">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://linkedin.com" class="social-link" aria-label="LinkedIn" target="_blank"
+                            rel="noopener">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://youtube.com" class="social-link" aria-label="YouTube" target="_blank"
+                            rel="noopener">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('home') }}" class="footer-link">Home</a></li>
+                        <li><a href="{{ url_for('blog_list') }}" class="footer-link">Blog</a></li>
+                        <li><a href="{{ url_for('about') }}" class="footer-link">About Us</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="footer-link">Contact</a></li>
+                        <li><a href="{{ url_for('admin_login') }}" class="footer-link">Admin Login</a></li>
+                    </ul>
+                </div>
+
+                <!-- Categories -->
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Categories</h3>
+                    <ul class="footer-links">
+                        {% for category in categories[:6] %}
+                        <li><a href="{{ url_for('category_view', slug=category.slug) }}" class="footer-link">{{
+                                category.name }}</a></li>
+                        {% endfor %}
+                        {% if categories|length > 6 %}
+                        <li><a href="{{ url_for('blog_list') }}" class="footer-link">View All Categories</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="footer-column">
+                    <h3 class="footer-column-title">Newsletter</h3>
+                    <p class="footer-description">Subscribe to get updates on new articles.</p>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Your email address" required>
+                            <div class="form-error"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-paper-plane"></i> Subscribe
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    &copy; {{ current_year }} Gztechiz. All rights reserved.
+                </div>
+                <div class="footer-legal">
+                    <a href="/privacy" class="footer-legal-link">Privacy Policy</a>
+                    <a href="/terms" class="footer-legal-link">Terms of Service</a>
+                    <a href="/sitemap.xml" class="footer-legal-link">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+
+    <!-- Page-specific scripts -->
+    {% block scripts %}{% endblock %}
+
+    <!-- ========== THIRD-PARTY SCRIPTS ========== -->
+    
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "ux4ltudtwi");
+    </script>
+    
+    <!-- Tawk.to Live Chat -->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/695ccd0726a3d11982f97da0/1je981qd9';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+    
+</body>
+
+</html>

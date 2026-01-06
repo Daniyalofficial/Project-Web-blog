@@ -1,0 +1,537 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - Gztechiz{% endblock %}
+
+{% block meta_description %}Search results for "{{ query }}"{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Search Header -->
+    <div class="search-header">
+        <h1 class="page-title">
+            <i class="fas fa-search"></i> Search Results
+        </h1>
+        
+        <!-- Search Box -->
+        <div class="search-box">
+            <form action="{{ url_for('search') }}" method="GET" class="search-form-main">
+                <div class="search-input-group-main">
+                    <i class="fas fa-search search-icon-main"></i>
+                    <input type="search" 
+                           name="q" 
+                           class="search-input-main" 
+                           placeholder="Search articles, tutorials, guides..."
+                           value="{{ query }}"
+                           autocomplete="off"
+                           required>
+                    <button type="submit" class="search-btn-main">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Results Info -->
+        <div class="search-results-info">
+            {% if query %}
+                {% if results_count > 0 %}
+                    <p>Found <strong>{{ results_count }}</strong> result{% if results_count != 1 %}s{% endif %} for "<strong>{{ query }}</strong>"</p>
+                {% else %}
+                    <p>No results found for "<strong>{{ query }}</strong>"</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    {% if posts and query %}
+    <div class="search-results">
+        {% for post in posts %}
+        <article class="search-result-card">
+            {% if post.image %}
+            <div class="search-result-image">
+                <img src="{{ url_for('static', filename='uploads/' + post.image) }}" 
+                     alt="{{ post.title }}" 
+                     loading="lazy">
+                {% if post.category %}
+                <span class="result-category">{{ post.category.name }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="search-result-content">
+                <h3 class="result-title">
+                    <a href="{{ url_for('post', slug=post.slug) }}">{{ post.title }}</a>
+                </h3>
+                
+                {% if post.subtitle %}
+                <p class="result-subtitle">{{ post.subtitle }}</p>
+                {% endif %}
+                
+                <div class="result-meta">
+                    <span class="result-meta-item">
+                        <i class="fas fa-user"></i> {{ post.author }}
+                    </span>
+                    <span class="result-meta-item">
+                        <i class="fas fa-clock"></i> {{ post.readtime }}
+                    </span>
+                    <span class="result-meta-item">
+                        <i class="fas fa-calendar"></i> {{ post.created_at.strftime('%b %d, %Y') }}
+                    </span>
+                    {% if post.category %}
+                    <span class="result-meta-item">
+                        <i class="fas fa-folder"></i> {{ post.category.name }}
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <p class="result-excerpt">
+                    {% set content_without_html = post.content|striptags %}
+                    {% set query_lower = query.lower() %}
+                    {% set content_lower = content_without_html.lower() %}
+                    {% set query_index = content_lower.find(query_lower) %}
+                    
+                    {% if query_index >= 0 %}
+                        {% set start = max(0, query_index - 50) %}
+                        {% set end = min(content_without_html|length, query_index + query|length + 100) %}
+                        ...{{ content_without_html[start:end]|replace(query, '<mark>' ~ query ~ '</mark>')|safe }}...
+                    {% else %}
+                        {{ content_without_html|truncate(200) }}
+                    {% endif %}
+                </p>
+                
+                <div class="result-footer">
+                    <a href="{{ url_for('post', slug=post.slug) }}" class="btn btn-sm btn-primary">
+                        Read Full Article <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <div class="result-stats">
+                        <span class="result-views" title="Views">
+                            <i class="fas fa-eye"></i> {{ post.views }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    
+    <!-- No Results Message -->
+    {% elif query and not posts %}
+    <div class="no-results">
+        <div class="no-results-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3>No articles found for "{{ query }}"</h3>
+        <p>Try these suggestions:</p>
+        <ul class="suggestions">
+            <li>Check your spelling</li>
+            <li>Try different keywords</li>
+            <li>Search by category</li>
+            <li>Browse all articles</li>
+        </ul>
+        <div class="no-results-actions">
+            <a href="{{ url_for('blog_list') }}" class="btn btn-primary">
+                <i class="fas fa-book"></i> Browse All Posts
+            </a>
+            <button onclick="clearSearch()" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Clear Search
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Popular Searches -->
+    {% if query and posts %}
+    <div class="popular-searches">
+        <h3>Related Searches</h3>
+        <div class="search-tags">
+            {% for category in categories[:8] %}
+            <a href="{{ url_for('category_view', slug=category.slug) }}" class="search-tag">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+/* Search Page Styles */
+.search-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.search-box {
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+
+.search-form-main {
+    width: 100%;
+}
+
+.search-input-group-main {
+    display: flex;
+    align-items: center;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0.5rem;
+    transition: all var(--transition);
+}
+
+.search-input-group-main:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-icon-main {
+    color: var(--text-muted);
+    margin: 0 1rem;
+    font-size: 1.1rem;
+}
+
+.search-input-main {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0.75rem 0;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+}
+
+.search-input-main::placeholder {
+    color: var(--text-muted);
+}
+
+.search-btn-main {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all var(--transition);
+    font-family: var(--font-sans);
+}
+
+.search-btn-main:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.search-results-info {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Search Results Cards */
+.search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.search-result-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: all var(--transition);
+    display: flex;
+    gap: 2rem;
+    padding: 1.5rem;
+}
+
+.search-result-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
+}
+
+.search-result-image {
+    flex: 0 0 250px;
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.search-result-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.search-result-card:hover .search-result-image img {
+    transform: scale(1.05);
+}
+
+.result-category {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.search-result-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.result-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.result-title a {
+    color: var(--text-primary);
+    transition: color var(--transition-fast);
+}
+
+.result-title a:hover {
+    color: var(--primary);
+}
+
+.result-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.result-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.result-excerpt {
+    flex: 1;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.result-excerpt mark {
+    background: #fffacd;
+    color: var(--text-primary);
+    padding: 0.125rem 0.25rem;
+    border-radius: var(--radius-sm);
+}
+
+.result-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+}
+
+.result-stats {
+    display: flex;
+    gap: 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* No Results Styling */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    margin: 2rem 0;
+}
+
+.no-results-icon {
+    font-size: 4rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.no-results h3 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.no-results p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.suggestions {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.suggestions li {
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    text-align: left;
+}
+
+.suggestions li::before {
+    content: "•";
+    color: var(--primary);
+    margin-right: 0.75rem;
+    font-weight: bold;
+}
+
+.no-results-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* Popular Searches */
+.popular-searches {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.popular-searches h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.search-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.search-tag {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+    border: 1px solid var(--border-color);
+}
+
+.search-tag:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-result-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .search-result-image {
+        flex: 0 0 auto;
+        width: 100%;
+        height: 200px;
+    }
+    
+    .search-input-group-main {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-icon-main {
+        display: none;
+    }
+    
+    .search-btn-main {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.75rem;
+    }
+    
+    .no-results-actions {
+        flex-direction: column;
+    }
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .result-excerpt mark {
+    background: #ffeb3b;
+    color: #000;
+}
+
+[data-theme="dark"] .search-tag {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+</style>
+
+<script>
+function clearSearch() {
+    document.querySelector('.search-input-main').value = '';
+    document.querySelector('.search-form-main').submit();
+}
+
+// Focus on search input when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.search-input-main');
+    if (searchInput && searchInput.value) {
+        searchInput.focus();
+        searchInput.select();
+    }
+    
+    // Live search suggestions (optional)
+    const searchForm = document.querySelector('.search-form-main');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            const query = document.querySelector('.search-input-main').value.trim();
+            if (!query || query.length < 2) {
+                e.preventDefault();
+                alert('Please enter at least 2 characters to search');
+                return false;
+            }
+            return true;
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Gztechiz - Professional Blog Platform{% endblock %}
+
+{% block meta_description %}Modern blog platform with cutting-edge technology articles, programming tutorials, and web development insights.{% endblock %}
+{% block meta_keywords %}blog, technology, programming, web development, tutorials, coding{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to <span class="highlight">Gztechiz</span></h1>
+            <p class="hero-subtitle">
+                A professional blog platform sharing insights on technology, programming, 
+                web development, and modern software engineering practices.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ url_for('blog_list') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-book-open"></i> Explore Articles
+                </a>
+                <a href="#featured" class="btn btn-outline btn-lg">
+                    <i class="fas fa-arrow-down"></i> Featured Posts
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_posts if stats else '100+' }}</div>
+                <div class="stat-label">Articles Published</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_categories if stats else '10+' }}</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_views if stats else '50K+' }}</div>
+                <div class="stat-label">Total Views</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_comments if stats else '500+' }}</div>
+                <div class="stat-label">Comments</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Posts -->
+<section id="featured" class="featured-posts">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i> Featured Articles
+            </h2>
+            <p class="section-subtitle">Handpicked content from our expert authors</p>
+        </div>
+        
+        <div class="blog-grid">
+            {% for post in posts %}
+            <article class="blog-card">
+                {% if post.image %}
+                <div class="blog-card-image">
+                    <img src="{{ url_for('static', filename='uploads/' + post.image) }}" 
+                         alt="{{ post.title }}" 
+                         loading="lazy">
+                    {% if post.category %}
+                    <span class="blog-card-category">{{ post.category.name }}</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span class="blog-card-meta-item">
+                            <i class="fas fa-user"></i> {{ post.author }}
+                        </span>
+                        <span class="blog-card-meta-item">
+                            <i class="fas fa-clock"></i> {{ post.readtime }}
+                        </span>
+                        <span class="blog-card-meta-item">
+                            <i class="fas fa-calendar"></i> {{ post.created_at.strftime('%b %d, %Y') }}
+                        </span>
+                    </div>
+                    
+                    <h3 class="blog-card-title">
+                        <a href="{{ url_for('post', slug=post.slug) }}">{{ post.title }}</a>
+                    </h3>
+                    
+                    {% if post.subtitle %}
+                    <p class="blog-card-subtitle">{{ post.subtitle }}</p>
+                    {% endif %}
+                    
+                    <p class="blog-card-excerpt">
+                        {{ post.excerpt or post.content|striptags|truncate(150) }}
+                    </p>
+                    
+                    <div class="blog-card-footer">
+                        <a href="{{ url_for('post', slug=post.slug) }}" class="btn btn-sm btn-primary">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <span class="blog-card-views">
+                            <i class="fas fa-eye"></i> {{ post.views }}
+                        </span>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('blog_list') }}" class="btn btn-primary">
+                <i class="fas fa-book"></i> View All Posts
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-folder"></i> Browse Categories
+            </h2>
+            <p class="section-subtitle">Explore articles by topic</p>
+        </div>
+        
+        <div class="categories-grid">
+            {% for category in categories[:6] %}
+            <a href="{{ url_for('category_view', slug=category.slug) }}" class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3 class="category-title">{{ category.name }}</h3>
+                <p class="category-count">{{ category.blogs|length }} articles</p>
+            </a>
+            {% endfor %}
+        </div>
+        
+        {% if categories|length > 6 %}
+        <div class="text-center mt-4">
+            <a href="{{ url_for('blog_list') }}" class="btn btn-outline">
+                View All Categories
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Recent Posts -->
+<section class="recent-posts">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i> Recent Articles
+            </h2>
+            <p class="section-subtitle">Latest from our blog</p>
+        </div>
+        
+        <div class="recent-posts-grid">
+            {% for post in recent_posts[:3] %}
+            <article class="recent-post-card">
+                {% if post.image %}
+                <div class="recent-post-image">
+                    <img src="{{ url_for('static', filename='uploads/' + post.image) }}" 
+                         alt="{{ post.title }}" loading="lazy">
+                </div>
+                {% endif %}
+                <div class="recent-post-content">
+                    <h3 class="recent-post-title">
+                        <a href="{{ url_for('post', slug=post.slug) }}">{{ post.title }}</a>
+                    </h3>
+                    <div class="recent-post-meta">
+                        <span>{{ post.created_at.strftime('%b %d, %Y') }}</span>
+                        <span>•</span>
+                        <span>{{ post.readtime }}</span>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-box">
+            <div class="newsletter-content">
+                <h2 class="newsletter-title">
+                    <i class="fas fa-paper-plane"></i> Stay Updated
+                </h2>
+                <p class="newsletter-text">
+                    Subscribe to our newsletter and never miss a new article.
+                    Get updates on the latest technology trends and tutorials.
+                </p>
+            </div>
+            <form class="newsletter-form" id="homeNewsletterForm">
+                <div class="form-group">
+                    <input type="email" class="form-control" 
+                           placeholder="Enter your email address" 
+                           required maxlength="100">
+                    <div class="form-error"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Subscribe
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Newsletter form submission
+document.getElementById('homeNewsletterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = this.querySelector('input[type="email"]').value;
+    
+    // Simple validation
+    if (!email || !email.includes('@')) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    // Simulate API call
+    const button = this.querySelector('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+    button.disabled = true;
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        this.reset();
+        showToast('Successfully subscribed to newsletter!', 'success');
+    }, 1500);
+});
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+}
+</script>
+{% endblock %}

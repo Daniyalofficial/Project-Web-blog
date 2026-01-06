@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} - Gztechiz{% endblock %}
+
+{% block content %}
+<h1 style="margin: 30px 0; color: #2c3e50;">
+    <i class="fas fa-folder"></i> Category: {{ category.name }}
+</h1>
+
+<div class="blog-grid">
+    {% for post in posts %}
+    <article class="blog-card">
+        {% if post.image %}
+        <div class="blog-card-image">
+            <img src="{{ url_for('static', filename='uploads/' + post.image) }}" alt="{{ post.title }}">
+        </div>
+        {% endif %}
+        <div class="blog-card-content">
+            <h3 class="blog-card-title">
+                <a href="{{ url_for('post', slug=post.slug) }}">{{ post.title }}</a>
+            </h3>
+            <p class="blog-card-excerpt">
+                {{ post.excerpt or post.content[:150] + '...' }}
+            </p>
+            <div class="blog-card-meta">
+                <span><i class="fas fa-user"></i> {{ post.author }}</span>
+                <span><i class="fas fa-clock"></i> {{ post.readtime }}</span>
+                <span><i class="fas fa-calendar"></i> {{ post.created_at.strftime('%b %d, %Y') }}</span>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+
+{% if not posts %}
+<div style="text-align: center; padding: 50px;">
+    <h3>No posts found in this category.</h3>
+    <a href="/blog" class="btn btn-primary" style="margin-top: 20px;">
+        Browse All Posts
+    </a>
+</div>
+{% endif %}
+{% endblock %}

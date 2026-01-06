@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Gift!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .welcome-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .welcome-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="confetti" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.3)"/><circle cx="5" cy="5" r="1" fill="rgba(255,255,255,0.2)"/><circle cx="15" cy="15" r="1.5" fill="rgba(255,255,255,0.25)"/></pattern></defs><rect width="100" height="100" fill="url(%23confetti)" opacity="0.3"/></svg>');
+            opacity: 0.5;
+            animation: float 20s linear infinite;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            animation: fall 5s linear infinite;
+        }
+
+        .confetti:nth-child(2) {
+            background: #ff4081;
+            left: 10%;
+            animation-delay: 0.5s;
+        }
+
+        .confetti:nth-child(3) {
+            background: #4caf50;
+            left: 20%;
+            animation-delay: 1s;
+        }
+
+        .confetti:nth-child(4) {
+            background: #2196f3;
+            left: 30%;
+            animation-delay: 1.5s;
+        }
+
+        .confetti:nth-child(5) {
+            background: #ff9800;
+            left: 40%;
+            animation-delay: 2s;
+        }
+
+        .confetti:nth-child(6) {
+            background: #9c27b0;
+            left: 50%;
+            animation-delay: 2.5s;
+        }
+
+        .confetti:nth-child(7) {
+            background: #00bcd4;
+            left: 60%;
+            animation-delay: 3s;
+        }
+
+        .confetti:nth-child(8) {
+            background: #8bc34a;
+            left: 70%;
+            animation-delay: 3.5s;
+        }
+
+        .confetti:nth-child(9) {
+            background: #ff5722;
+            left: 80%;
+            animation-delay: 4s;
+        }
+
+        .confetti:nth-child(10) {
+            background: #795548;
+            left: 90%;
+            animation-delay: 4.5s;
+        }
+
+        .gift-icon {
+            font-size: 4rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .message-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-text {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .gift-message {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #ffeb3b;
+        }
+
+        .from-text {
+            text-align: right;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+
+        .instructions {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .instructions h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .instructions-list {
+            color: rgba(255, 255, 255, 0.9);
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+
+        .instructions-list li {
+            margin-bottom: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-accept {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-accept:hover {
+            background: #388e3c;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-close {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(20px, 20px) rotate(360deg);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-container {
+                padding: 25px;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-accept,
+            .btn-close {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Confetti -->
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+
+    <div class="welcome-container">
+        <div class="gift-icon pulse">
+            <i class="fas fa-gift"></i>
+        </div>
+
+        <h1 class="welcome-title">🎁 Special Gift Alert! 🎁</h1>
+        <p class="welcome-subtitle">Happy New Year to My Dear Cousin!</p>
+
+        <div class="message-box">
+            <h2 class="message-title">
+                <i class="fas fa-heart" style="color: #ff4081;"></i>
+                A Gift From Your Cousin
+            </h2>
+            <p class="message-text">
+                Welcome to your very own <strong>Professional Blog Platform</strong>!
+                This is my New Year gift to you - a complete website worth
+                <span style="color: #ffeb3b; font-weight: bold;">Free for You</span>
+                to start your blogging journey!
+            </p>
+        </div>
+
+        <div class="gift-message">
+            <h3 class="message-title">
+                <i class="fas fa-star" style="color: #ffeb3b;"></i>
+                Personal Message:
+            </h3>
+            <p class="message-text">
+                "Dear Cousin,<br><br>
+                I've built this complete blog platform for you as a New Year gift!
+                It's not just a website - it's a tool to share your thoughts,
+                build your audience, and start your digital journey.
+                You can write about anything you're passionate about!<br><br>
+
+                <strong>Your Admin Credentials:</strong><br>
+                📧 Email: <code>gztechiz@admin.com</code><br>
+                🔑 Password: <code>gulzaib077</code><br><br>
+
+                Be consistent, be authentic,
+                and watch your blog grow!<br><br>
+                With love and best wishes for an amazing year ahead!"
+            </p>
+            <p class="from-text">- From your cousin, Daniyal</p>
+        </div>
+
+        <div class="instructions">
+            <h3>
+                <i class="fas fa-rocket" style="color: #4caf50;"></i>
+                Quick Start Guide:
+            </h3>
+            <ul class="instructions-list">
+                <li>📝 Click below to go to your Admin Dashboard</li>
+                <li>✨ Add your first blog post about anything you like</li>
+                <li>🎨 Customize categories, images, and content</li>
+                <li>📱 Share your blog with friends and family</li>
+                <li>🚀 Watch your audience grow!</li>
+            </ul>
+        </div>
+        <audio id="giftSound" preload="auto">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"
+                type="audio/mpeg">
+        </audio>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const sound = document.getElementById('giftSound');
+                sound.volume = 0.3;
+                sound.play().catch(e => console.log('Audio play failed:', e));
+            });
+        </script>
+        <div class="button-group">
+            <button onclick="acceptGift()" class="btn-accept">
+                <i class="fas fa-check-circle"></i> Accept Gift & Go to Dashboard
+            </button>
+            <button onclick="closeWelcome()" class="btn-close">
+                <i class="fas fa-times"></i> Close This Message
+            </button>
+        </div>
+
+        <p style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-top: 20px; font-size: 0.9rem;">
+            <i class="fas fa-info-circle"></i> This message will only appear once
+        </p>
+    </div>
+
+    <script>
+        // Store in localStorage that user has seen the welcome
+        localStorage.setItem('hasSeenWelcome', 'true');
+
+        function acceptGift() {
+            // Set cookie to never show again
+            document.cookie = "has_seen_welcome=true; path=/; max-age=31536000"; // 1 year
+
+            // Redirect to admin panel
+            window.location.href = "/admin/panel";
+        }
+
+        function closeWelcome() {
+            // Set cookie to never show again
+            document.cookie = "has_seen_welcome=true; path=/; max-age=31536000";
+
+            // Redirect to homepage
+            window.location.href = "/";
+        }
+
+        // Auto-close after 5 minutes
+        setTimeout(() => {
+            document.cookie = "has_seen_welcome=true; path=/; max-age=31536000";
+        }, 5 * 60 * 1000);
+    </script>
+</body>
+
+</html>

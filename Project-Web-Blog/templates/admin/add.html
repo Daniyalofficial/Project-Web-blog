@@ -1,0 +1,363 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Blog Post - Admin Panel{% endblock %}
+
+{% block styles %}
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+    .quill-wrapper {
+        margin-bottom: 20px;
+    }
+    
+    .seo-preview {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+        font-family: Arial, sans-serif;
+    }
+    
+    .seo-preview-title {
+        color: #1a0dab;
+        font-size: 18px;
+        line-height: 1.3;
+        margin-bottom: 5px;
+    }
+    
+    .seo-preview-url {
+        color: #006621;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    
+    .seo-preview-description {
+        color: #545454;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    
+    .form-tabs {
+        display: flex;
+        border-bottom: 2px solid #e9ecef;
+        margin-bottom: 20px;
+    }
+    
+    .tab-btn {
+        padding: 10px 20px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        font-weight: 500;
+        color: #6c757d;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .tab-btn.active {
+        color: #007bff;
+        border-bottom-color: #007bff;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header">
+        <h1>
+            <i class="fas fa-plus-circle"></i> Add New Blog Post
+        </h1>
+        <a href="/admin/panel" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    
+    <div class="form-container">
+        <div class="form-tabs">
+            <button type="button" class="tab-btn active" data-tab="content">Content</button>
+            <button type="button" class="tab-btn" data-tab="seo">SEO Settings</button>
+            <button type="button" class="tab-btn" data-tab="media">Media</button>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" id="blogForm" novalidate>
+            <!-- Content Tab -->
+            <div class="tab-content active" id="content-tab">
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title" class="form-label">Title *</label>
+                    <input type="text" id="title" name="title" class="form-control" 
+                           placeholder="Enter blog title" required maxlength="150">
+                    <small class="form-help">Max 150 characters</small>
+                </div>
+                
+                <!-- Subtitle -->
+                <div class="form-group">
+                    <label for="subtitle" class="form-label">Subtitle</label>
+                    <input type="text" id="subtitle" name="subtitle" class="form-control" 
+                           placeholder="Brief description (optional)" maxlength="250">
+                    <small class="form-help">Max 250 characters</small>
+                </div>
+                
+                <!-- Author & Read Time -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="author" class="form-label">Author</label>
+                        <input type="text" id="author" name="author" class="form-control" 
+                               value="Admin" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="readtime" class="form-label">Read Time</label>
+                        <input type="text" id="readtime" name="readtime" class="form-control" 
+                               value="5 min read" maxlength="20">
+                    </div>
+                </div>
+                
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" id="category" name="category" class="form-control" 
+                           placeholder="e.g., Technology, Programming" maxlength="50">
+                    <small class="form-help">Create new or select existing category</small>
+                </div>
+                
+                <!-- Slug -->
+                <div class="form-group">
+                    <label for="slug" class="form-label">URL Slug</label>
+                    <input type="text" id="slug" name="slug" class="form-control" 
+                           placeholder="Will auto-generate from title">
+                    <small class="form-help">SEO-friendly URL (e.g., my-awesome-post)</small>
+                </div>
+                
+                <!-- Content Editor -->
+                <div class="form-group">
+                    <label for="content" class="form-label">Content *</label>
+                    <div class="quill-wrapper">
+                        <div id="editor" style="height: 400px;"></div>
+                    </div>
+                    <input type="hidden" id="content" name="content">
+                </div>
+            </div>
+            
+            <!-- SEO Tab -->
+            <div class="tab-content" id="seo-tab">
+                <div class="seo-section">
+                    <h3 class="seo-section-title">
+                        <i class="fas fa-search"></i> SEO Settings
+                    </h3>
+                    
+                    <!-- Meta Title -->
+                    <div class="form-group">
+                        <label for="meta_title" class="form-label">Meta Title</label>
+                        <input type="text" id="meta_title" name="meta_title" class="form-control" 
+                               placeholder="Title for search engines" maxlength="200">
+                        <small class="form-help">Recommended: 50-60 characters</small>
+                    </div>
+                    
+                    <!-- Meta Description -->
+                    <div class="form-group">
+                        <label for="meta_description" class="form-label">Meta Description</label>
+                        <textarea id="meta_description" name="meta_description" class="form-control" 
+                                  rows="3" placeholder="Description for search results" maxlength="300"></textarea>
+                        <small class="form-help">Recommended: 150-160 characters</small>
+                    </div>
+                    
+                    <!-- Meta Keywords -->
+                    <div class="form-group">
+                        <label for="meta_keywords" class="form-label">Keywords</label>
+                        <input type="text" id="meta_keywords" name="meta_keywords" class="form-control" 
+                               placeholder="keyword1, keyword2, keyword3" maxlength="200">
+                        <small class="form-help">Separate with commas</small>
+                    </div>
+                    
+                    <!-- Preview -->
+                    <div class="seo-preview">
+                        <div id="seo-preview-title" class="seo-preview-title">Sample Title</div>
+                        <div id="seo-preview-url" class="seo-preview-url">https://yourblog.com/post/slug</div>
+                        <div id="seo-preview-description" class="seo-preview-description">Sample description will appear here...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Media Tab -->
+            <div class="tab-content" id="media-tab">
+                <!-- Featured Image -->
+                <div class="form-group">
+                    <label for="image" class="form-label">Featured Image</label>
+                    <input type="file" id="image" name="image" class="form-control" 
+                           accept="image/*" onchange="previewImage(this, 'image-preview')">
+                    <small class="form-help">Recommended: 1200×630px (JPG, PNG, WebP)</small>
+                    <div id="image-preview" class="image-preview mt-2"></div>
+                </div>
+                
+                <!-- OG Image -->
+                <div class="form-group">
+                    <label for="og_image" class="form-label">Social Media Image (OG Image)</label>
+                    <input type="file" id="og_image" name="og_image" class="form-control" 
+                           accept="image/*" onchange="previewImage(this, 'og-image-preview')">
+                    <small class="form-help">Image for social sharing (Facebook, Twitter)</small>
+                    <div id="og-image-preview" class="image-preview mt-2"></div>
+                </div>
+            </div>
+            
+            <!-- Submit Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Publish Post
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Reset Form
+                </button>
+                <a href="/admin/panel" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+    // Initialize Quill Editor
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                ['link', 'image', 'video', 'code-block'],
+                ['clean']
+            ]
+        },
+        placeholder: 'Write your blog content here...'
+    });
+    
+    // Tab Switching
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.dataset.tab;
+            
+            // Update active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Show active tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+    });
+    
+    // Auto-generate slug from title
+    document.getElementById('title').addEventListener('input', function() {
+        const title = this.value;
+        const slugField = document.getElementById('slug');
+        const metaTitleField = document.getElementById('meta_title');
+        const metaDescField = document.getElementById('meta_description');
+        
+        // Generate slug
+        if (!slugField.value) {
+            const slug = title.toLowerCase()
+                .replace(/[^\w\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 100);
+            slugField.value = slug;
+        }
+        
+        // Auto-fill meta title if empty
+        if (!metaTitleField.value) {
+            metaTitleField.value = title.substring(0, 60);
+        }
+        
+        // Auto-fill meta description if empty
+        if (!metaDescField.value && title.length > 20) {
+            metaDescField.value = title.substring(0, 160) + '...';
+        }
+        
+        // Update SEO preview
+        updateSeoPreview();
+    });
+    
+    // Update SEO preview in real-time
+    document.getElementById('meta_title').addEventListener('input', updateSeoPreview);
+    document.getElementById('meta_description').addEventListener('input', updateSeoPreview);
+    document.getElementById('slug').addEventListener('input', updateSeoPreview);
+    
+    function updateSeoPreview() {
+        const title = document.getElementById('meta_title').value || document.getElementById('title').value;
+        const description = document.getElementById('meta_description').value || 
+                           'Read this amazing article on our blog...';
+        const slug = document.getElementById('slug').value || 'post-slug';
+        
+        document.getElementById('seo-preview-title').textContent = title.substring(0, 60);
+        document.getElementById('seo-preview-url').textContent = `https://gztechiz.com/post/${slug}`;
+        document.getElementById('seo-preview-description').textContent = description.substring(0, 160);
+    }
+    
+    // Image preview
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        preview.innerHTML = '';
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '200px';
+                img.style.maxHeight = '150px';
+                img.style.borderRadius = '8px';
+                img.style.marginTop = '10px';
+                preview.appendChild(img);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    // Form submission
+    document.getElementById('blogForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get content from Quill editor
+        const contentInput = document.getElementById('content');
+        contentInput.value = quill.root.innerHTML;
+        
+        // Validation
+        const title = document.getElementById('title').value.trim();
+        const content = contentInput.value.trim();
+        
+        if (!title) {
+            alert('Please enter a title');
+            document.getElementById('title').focus();
+            return false;
+        }
+        
+        if (!content || content === '<p><br></p>') {
+            alert('Please enter content');
+            quill.focus();
+            return false;
+        }
+        
+        // Submit form
+        this.submit();
+    });
+    
+    // Initialize SEO preview
+    updateSeoPreview();
+</script>
+{% endblock %}
